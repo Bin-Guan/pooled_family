@@ -15,4 +15,5 @@ GATK -m 24g MuTect2 \
      --output_mode EMIT_VARIANTS_ONLY \
      -o $1_mutect2.vcf.gz \
      -L /data/OGVFB/OGL_NGS/bed/xgen-exome-research-panel-targets-nochr-sorted.bed \
+     --interval_padding 200 \
      -R /data/guanb/resource/GATK_resource_bundle/b37-2.8/human_g1k_v37_decoy.fasta  
