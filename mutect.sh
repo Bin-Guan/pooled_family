@@ -7,6 +7,7 @@ fam=$1
 #sbatch --cpus-per-task=8 --mem=24g --time=24:00:00 mutect.sh 2053
 #https://software.broadinstitute.org/gatk/documentation/article?id=9183
 #July 2019: 2 exome samples finished in < 14 hours and the 3rd finished <18 hours.
+#The Bam file should contain only one readgroup, or the MuTect2 step would fail.
 
 GATK -m 24g MuTect2 \
      -threads 8 \
