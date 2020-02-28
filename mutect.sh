@@ -8,6 +8,7 @@ fam=$1
 #https://software.broadinstitute.org/gatk/documentation/article?id=9183
 #some files need ~45 hours
 #July 2019: 2 exome samples finished in < 14 hours and the 3rd finished <18 hours.
+#The Bam file should contain only one readgroup, or the MuTect2 step would fail.
 
 GATK -m 64g MuTect2 \
      -threads 16 \
@@ -17,4 +18,5 @@ GATK -m 64g MuTect2 \
      -o $1_mutect2.vcf.gz \
 	 --interval_padding 200 \
      -L /data/OGVFB/OGL_NGS/bed/xgen-exome-research-panel-targets-nochr-sorted.bed \
+     --interval_padding 200 \
      -R /data/guanb/resource/GATK_resource_bundle/b37-2.8/human_g1k_v37_decoy.fasta  
