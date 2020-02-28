@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Continued from mutect vcf.gz
-#sbatch --mem=16g --cpus-per-task=1 /data/OGVFB/OGL_NGS/variant_prioritization/src/manual_vcf_vt_intervar_VEP_vcfanno.v1.sh VCF
+#sbatch --mem=16g --cpus-per-task=1 ~/git/pooled_family/mutect_annovar_intervar.sh VCF
 set -e
 
 VCF=$1 #vcf.gz
@@ -32,10 +32,10 @@ InterVar -i ${VCF%.vcf.gz}.avinput \
 
 sed "1 s/"Otherinfo"/"VCF_CHROM\\tVCF_POS\\tVCF_ID\\tVCF_REF\\tVCF_ALT\\tVCF_QUAL\\tVCF_FILTER\\tVCF_INFO\\tVCF_FORMAT\\tVCF_TUMOR\\tVCF_NORMAL"/" ${VCF%.vcf.gz}.hg19_multianno.txt > ${VCF%.vcf.gz}.annovar.txt
 
-module load R/3.5
-# #$1 = intervar ouput, $2 = annovar output, $3 = intervar_annovar_output for vcfanno (must be txt file)
+module load R/3.5.2
+# #$1 = intervar ouput, $2 = annovar output, $3 = intervar_annovar_output for vcfanno (must be txt file), $4 OGLv1_panel_DxORcandidate
 
-Rscript ~/git/pooled_family/annovar_intervar_mutect_v1.6.R ${VCF%.vcf.gz}.hg19_multianno.txt.intervar ${VCF%.vcf.gz}.annovar.txt ${VCF%.vcf.gz}.annovar.intervar.filtered.txt
+Rscript ~/git/pooled_family/annovar_intervar_mutect_v1.6.R ${VCF%.vcf.gz}.hg19_multianno.txt.intervar ${VCF%.vcf.gz}.annovar.txt ${VCF%.vcf.gz}.annovar.intervar.filtered.txt /data/OGVFB/OGL_NGS/variant_prioritization/data/OGLv1_panel_DxORcandidate.tsv
 
 
 

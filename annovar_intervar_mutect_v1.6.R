@@ -43,6 +43,14 @@ annovar <- read.delim(args[2], sep = "\t", header = TRUE, na.strings = c("."),
   separate('VCF_TUMOR', c('TUMOR_GT','TUMOR_AD','TUMOR_AF','TUMOR_4','TUMOR_5','TUMOR_6','TUMOR_7','TUMOR_8','TUMOR_9'), sep = ':', remove = FALSE, convert = TRUE) %>% 
   separate('VCF_NORMAL', c('NORMAL_GT','NORMAL_AD','NORMAL_AF','NORMAL_4','NORMAL_5','NORMAL_6','NORMAL_7','NORMAL_8','NORMAL_9'), sep = ':', remove = FALSE, convert = TRUE)
 
+OGLv1_gene_class <- read.delim(args[4], sep = "\t", header = T, colClasses = c("character","character", "character") ) 
+
+annovar_OGLv1_class <- left_join(annovar, OGLv1_gene_class, by = c("Gene.refGene" = "gene"))
+
+#annovar_OGLv1_class <- merge(x = annovar, y = OGLv1_gene_class, 
+#                             by.x = c("Ref.Gene"), by.y = c("gene"), all.x = TRUE, 
+#                            sort = FALSE, suffixes = c(".annovar", ".intervar"), no.dups = TRUE,
+#                             incomparables = NULL) 
 
 #pick one annotation for each variant that is of highest Priority score
 intervar_for_sorting <- intervar %>% 
@@ -66,7 +74,7 @@ intervar_for_sorting <- intervar %>%
   group_by(variantkey) %>%
   slice(which.max(Priority.Score))
   
-annovar_inter <- merge(x = annovar, y = intervar_for_sorting, 
+annovar_inter <- merge(x = annovar_OGLv1_class, y = intervar_for_sorting, 
                        by.x = c("Chr", "Start", "End", "Ref", "Alt"), by.y = c("X.Chr", "Start", "End", "Ref", "Alt"), all.x = TRUE, 
                        sort = FALSE, suffixes = c(".annovar", ".intervar"), no.dups = TRUE,
                        incomparables = NULL) %>%
@@ -81,7 +89,7 @@ annovar_inter <- merge(x = annovar, y = intervar_for_sorting,
   filter(gnomAD_genome_ALL < 0.05) %>% 
   filter(Priority.Score > -3) %>% 
   filter(TUMOR_AF > 0.10) %>% 
-  select(c("VCF_CHROM", "VCF_POS", "VCF_ID", "VCF_REF", "VCF_ALT", "VCF_QUAL", "VCF_FILTER", "Chr", "Start", "End", "Ref", "Alt", 'TUMOR_GT','TUMOR_AD','TUMOR_AF','NORMAL_GT','NORMAL_AD','NORMAL_AF',"Priority.Score", "Ref.Gene",  
+  select(c("Chr", "Start", "End", "Ref", "Alt", "VCF_FILTER", 'TUMOR_GT','TUMOR_AD','TUMOR_AF','NORMAL_GT','NORMAL_AD','NORMAL_AF',"Priority.Score","panel_class","Ref.Gene",  
 		"Func.refGene.intervar", "Gene.refGeneWithVer", "GeneDetail.refGeneWithVer", "ExonicFunc.refGeneWithVer", "AAChange.refGeneWithVer",
 		"clinvar..Clinvar", "InterVar..InterVar.and.Evidence", "PopFreqMax", "gnomAD_exome_ALL", "gnomAD_genome_ALL", 
 		"Freq_esp6500siv2_all", "Freq_1000g2015aug_all","dbscSNV_ADA_SCORE.intervar", "dbscSNV_RF_SCORE.intervar", "dpsi_max_tissue", "dpsi_zscore", 
